@@ -46,8 +46,7 @@ fn run_cmake_command(build_dir: &str, args: &[String]) -> io::Error {
 fn main() -> io::Result<()> {
     let Args { mut build_directory, args } = Args::parse();
 
-    if args.contains(&"-B".to_string()) {
-        let index = args.iter().position(|item| item == "-B").unwrap();
+    if let Some(index) = args.iter().position(|item| item == "-B") {
         if args.len() >= index + 2 {
             build_directory = args[index + 1].clone();
         }

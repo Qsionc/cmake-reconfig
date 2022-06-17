@@ -44,21 +44,21 @@ fn run_cmake_command(build_dir: &str, args: &[String]) -> io::Error {
 }
 
 fn main() -> io::Result<()> {
-    let mut args = Args::parse();
+    let Args { mut build_directory, args } = Args::parse();
 
-    if args.args.contains(&"-B".to_string()) {
-        let index = args.args.iter().position(|item| item == "-B").unwrap();
-        if args.args.len() >= index + 2 {
-            args.build_directory = args.args[index + 1].clone();
+    if args.contains(&"-B".to_string()) {
+        let index = args.iter().position(|item| item == "-B").unwrap();
+        if args.len() >= index + 2 {
+            build_directory = args[index + 1].clone();
         }
     }
 
-    let mut path = PathBuf::from(args.build_directory.clone());
+    let mut path = PathBuf::from(build_directory.clone());
 
     if path.is_dir() {
         path.push("CMakeCache.txt");
         delete_file(&path);
     }
 
-    Err(run_cmake_command(&args.build_directory, &args.args))
+    Err(run_cmake_command(&build_directory, &args))
 }

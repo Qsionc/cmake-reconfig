@@ -28,7 +28,7 @@ struct Args {
 /// Simple method for deletion of single file, if existing
 fn delete_file(path: &Path) {
     if path.exists() {
-        if let Err(e) = std::fs::remove_file(&path) {
+        if let Err(e) = std::fs::remove_file(path) {
             eprintln!("{:?}", e);
         }
     }

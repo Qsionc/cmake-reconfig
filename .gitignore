@@ -1,0 +1,7 @@
+/target
+/.idea
+**.lock
+**.iml
+CMakeLists.txt
+/cmake
+/build

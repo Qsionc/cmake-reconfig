@@ -28,15 +28,10 @@ struct Args {
 /// Simple method for deletion of single file, if existing
 fn delete_file(path: &Path) {
     if path.exists() {
-        if let Err(e) = std::fs::remove_file(&path) {
+        if let Err(e) = std::fs::remove_file(path) {
             eprintln!("{:?}", e);
         }
     }
-}
-
-///Check is path exists and is a directory
-fn is_existing_directory(path: &Path) -> bool {
-    path.exists() && path.is_dir()
 }
 
 ///Run CMake command with custom arguments from command line
@@ -49,21 +44,20 @@ fn run_cmake_command(build_dir: &str, args: &[String]) -> io::Error {
 }
 
 fn main() -> io::Result<()> {
-    let mut args = Args::parse();
+    let Args { mut build_directory, args } = Args::parse();
 
-    if args.args.contains(&"-B".to_string()) {
-        let index = args.args.iter().position(|item| item == "-B").unwrap();
-        if args.args.len() >= index + 2 {
-            args.build_directory = args.args[index + 1].clone();
+    if let Some(index) = args.iter().position(|item| item == "-B") {
+        if args.len() >= index + 2 {
+            build_directory = args[index + 1].clone();
         }
     }
 
-    let mut path = PathBuf::from(args.build_directory.clone());
+    let mut path = PathBuf::from(build_directory.clone());
 
-    if is_existing_directory(&path) {
+    if path.is_dir() {
         path.push("CMakeCache.txt");
         delete_file(&path);
     }
 
-    Err(run_cmake_command(&args.build_directory, &args.args))
+    Err(run_cmake_command(&build_directory, &args))
 }

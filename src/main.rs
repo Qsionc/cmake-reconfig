@@ -34,11 +34,6 @@ fn delete_file(path: &Path) {
     }
 }
 
-///Check is path exists and is a directory
-fn is_existing_directory(path: &Path) -> bool {
-    path.exists() && path.is_dir()
-}
-
 ///Run CMake command with custom arguments from command line
 fn run_cmake_command(build_dir: &str, args: &[String]) -> io::Error {
     Command::new("cmake")
@@ -60,7 +55,7 @@ fn main() -> io::Result<()> {
 
     let mut path = PathBuf::from(args.build_directory.clone());
 
-    if is_existing_directory(&path) {
+    if path.is_dir() {
         path.push("CMakeCache.txt");
         delete_file(&path);
     }
